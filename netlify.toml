@@ -1,0 +1,26 @@
+[build]
+  command = "vite build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Semua request /api/* ditangani oleh Netlify Function (netlify/functions/api.ts),
+# yang meneruskannya ke API eksternal (vps-donghuawatch.vercel.app) dengan
+# format path yang benar. JANGAN diubah jadi redirect langsung ke API eksternal,
+# karena format URL frontend (mis. /api/donghua/ongoing?page=1) berbeda dari
+# format API eksternal (mis. /api/ongoing/1).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# SPA fallback - harus berada paling akhir
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
